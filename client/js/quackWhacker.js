@@ -357,7 +357,7 @@ const changeState = (newState) => {
                         console.log("checkHighScores response received - status: " + xhr.status);
                         if(xhr.status === 200) {
                             if(xhr.responseText == "allTime") {
-                                msg += "<br><br>That's a new all-time record!<br><br>Enter your name and submit to add<br>your score to the leaderboards.";
+                                msg += "<br><br>That's a new all-time record!<br><br>Enter your name to submit your<br>score to the leaderboards.";
                                 document.querySelector('#submitScoreForm').style.display = "block";
                                 document.querySelector('#submitScoreName').disabled = false;
                                 document.querySelector('#submitScoreBtn').disabled = false;
