@@ -170,6 +170,13 @@ const initGameMenus = () => {
         }
     });
 
+    window.addEventListener("keypress", (event) => {
+        if(event.key === 'Enter') {
+            event.preventDefault();
+            submitScore();
+        }
+    });
+
     birdSelectionBtn.addEventListener("click", () => {
         gameStartScreen.style.display = "none";
         birdSelectScreen.style.display = "flex";
@@ -186,41 +193,7 @@ const initGameMenus = () => {
     });
 
     document.querySelector('#submitScoreBtn').addEventListener("click", (e) => {
-        let name = document.querySelector("#submitScoreName").value;
-        if(name !== "") {
-            let data = {};
-            data["name"] = name;
-            data["bird"] = bird.name;
-            data["score"] = sessionHighScore;
-            data["date"] = new Date();
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST","/postHighScore", true);
-            xhr.setRequestHeader("Content-Type","application/json");           
-            xhr.send(JSON.stringify(data));
-            xhr.onreadystatechange = (e) => {    
-                if(xhr.readyState === 4 && xhr.status == 200) {
-                    console.log("postHighScores request successful");
-                    if(xhr.responseText === "badWord") {
-                        let submitScoreMsg = document.querySelector('#submitScoreMsg');
-                        submitScoreMsg.style.display = "flex";
-                        submitScoreMsg.style.color = "red";
-                        submitScoreMsg.innerHTML = "No bad words!";
-                    } else if (xhr.responseText === "ok") {
-                        let submitScoreMsg = document.querySelector('#submitScoreMsg');                            
-                        submitScoreMsg.style.display = "flex";
-                        submitScoreMsg.style.color = "green";
-                        submitScoreMsg.innerHTML = "Score submitted!";
-                        document.querySelector('#submitScoreName').disabled = true;
-                        document.querySelector('#submitScoreBtn').disabled = true;
-                    } else {
-                        submitScoreMsg.style.display = "flex";
-                        submitScoreMsg.style.color = "red";
-                        submitScoreMsg.innerHTML = "Something went wrong - please try again later.";
-                    }                        
-                }
-            }            
-        }        
+        submitScore();  
     });
 
     document.querySelector('#playAgainBtn').addEventListener("click", (e) => {  
@@ -256,6 +229,44 @@ const initGameMenus = () => {
 
     bird = duck;
     changeState(gameState.MENU);
+}
+
+submitScore = () => {
+    let name = document.querySelector("#submitScoreName").value;
+    if(name !== "") {
+        let data = {};
+        data["name"] = name;
+        data["bird"] = bird.name;
+        data["score"] = sessionHighScore;
+        data["date"] = new Date();
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST","/postHighScore", true);
+        xhr.setRequestHeader("Content-Type","application/json");           
+        xhr.send(JSON.stringify(data));
+        xhr.onreadystatechange = (e) => {    
+            if(xhr.readyState === 4 && xhr.status == 200) {
+                console.log("postHighScores request successful");
+                if(xhr.responseText === "badWord") {
+                    let submitScoreMsg = document.querySelector('#submitScoreMsg');
+                    submitScoreMsg.style.display = "flex";
+                    submitScoreMsg.style.color = "red";
+                    submitScoreMsg.innerHTML = "No bad words!";
+                } else if (xhr.responseText === "ok") {
+                    let submitScoreMsg = document.querySelector('#submitScoreMsg');                            
+                    submitScoreMsg.style.display = "flex";
+                    submitScoreMsg.style.color = "green";
+                    submitScoreMsg.innerHTML = "Score submitted!";
+                    document.querySelector('#submitScoreName').disabled = true;
+                    document.querySelector('#submitScoreBtn').disabled = true;
+                } else {
+                    submitScoreMsg.style.display = "flex";
+                    submitScoreMsg.style.color = "red";
+                    submitScoreMsg.innerHTML = "Something went wrong - please try again later.";
+                }                        
+            }
+        }            
+    }   
 }
 
 Promise.all([
