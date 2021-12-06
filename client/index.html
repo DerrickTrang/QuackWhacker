@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quack Whacker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" type="text/css" href="css/quackWhacker.css">    
+</head>
+<body>
+    <canvas id="gs"></canvas>
+    <div id="gameStartScreen" class="menu">
+        <div class="menuContainer">
+            <h2>Quack Whacker</h2>
+            <button type="button" id="startGameBtn">Play</button><br>
+            <button type="button" id="openInstructionsBtn">Instructions</button><br>
+            <button type="button" id="openLeaderboardsBtn">Leaderboards</button><br>
+            <button type="button" id="birdSelectionBtn">Selected Bird (Duck)<br><br><img id="selectedBird" src="img/DuckIdle.png"></button>
+        </div>        
+    </div>
+    <div id="gameInstructionsScreen" class="menu">
+        <div class="menuContainer">
+            <div class="menuText">
+                <center><h3>Instructions</h3></center>
+                <ul>
+                    <li>Tap to drop the bird</li>
+                    <li>Tap again to swing the bat</li>
+                    <li>Hit the bird as far as possible</li>
+                </ul>                
+                <br>        
+            </div>
+            <button type="button" id="closeInstructionsBtn">Back</button>
+        </div>        
+    </div>
+    <div id="leaderboardsScreen" class="menu">
+        <div class="menuContainer">
+            <div class="menuText" id="leaderboard">
+                <center><h3>Leaderboards</h3></center>
+                <div class="leaderboardOptions">
+                    <div class="optionDropdown">
+                        <div>
+                            <button class="leaderboardButton" id="birdOptionButton">All birds</button>
+                        </div>
+                        <div class= "leaderboardDropdown" id="birdDropdown">
+                            <button class="birdDropdownButton">All birds</button>
+                            <button class="birdDropdownButton">Duck</button>
+                            <button class="birdDropdownButton">Eagle</button>
+                            <button class="birdDropdownButton">Penguin</button>
+                        </div>
+                    </div>
+                    <div class="optionDropdown">
+                        <div>
+                            <button class="leaderboardButton" id="dateOptionButton">All time</button>
+                        </div>
+                        <div class= "leaderboardDropdown" id="dateDropdown">
+                            <button class="dateDropdownButton">All time</button>
+                            <button class="dateDropdownButton">Monthly</button>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div id="highScoreTableContainer">
+                    <table id="highScoresTable"></table>
+                </div>
+                <h4 id="leaderboardMsg">Loading...</h2>
+                <br>
+            </div>
+            <button type="button" id="closeLeaderboardsBtn">Back</button>
+        </div>        
+    </div>
+    <div id="birdSelectScreen" class="menu">
+        <div class="menuContainer">
+            <center><h3>Select a bird:</h3></center>
+            <button type="button" class="selectBird" title="Duck">Duck<br><br><img src="img/DuckIdle.png"></button><br>
+            <button type="button" class="selectBird" title="Eagle">Eagle<br><br><img src="img/EagleIdle.png"></button><br>
+            <button type="button" class="selectBird" title="Penguin">Penguin<br><br><img src="img/PenguinIdle.png"></button>
+        </div>        
+    </div>
+    <div id="gameOverScreen" class="menu">
+        <div class="menuContainer">            
+            <div id="gameOverMsg" class="menuText">Game over!</div><br>
+            <form id="submitScoreForm">
+                <input type="text" id="submitScoreName" maxlength="15" placeholder="Name (required)" required><br>
+                <div id="submitScoreMsg"></div><br>
+                <br>
+                <button type="button" class="button" id="submitScoreBtn">Submit Score</button>
+            </form><br>
+            <button type="button" id="playAgainBtn">Play Again</button><br>
+            <button type="button" id="menuScreenBtn">Menu</button>
+        </div>
+    </div>    
+    
+    <!-- Load scripts at the end of a page -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>        
+    <script src="js/constants.js"></script>
+    <script src="js/quackWhacker.js"></script>
+    <script src="js/menu.js"></script>
+</body>
+</html>
