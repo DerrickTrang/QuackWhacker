@@ -3,7 +3,8 @@
 <head>
     <title>Quack Whacker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <link rel="stylesheet" type="text/css" href="css/quackWhacker.css">    
+    <link rel="stylesheet" type="text/css" href="css/quackWhacker.css">
+    <link rel="shortcut icon" href="#">
 </head>
 <body>
     <canvas id="gs"></canvas>
@@ -13,8 +14,8 @@
             <button type="button" id="startGameBtn">Play</button><br>
             <button type="button" id="openInstructionsBtn">Instructions</button><br>
             <button type="button" id="openLeaderboardsBtn">Leaderboards</button><br>
-            <button type="button" id="birdSelectionBtn">Selected Bird (Duck)<br><br><img id="selectedBird" src="img/DuckIdle.png"></button>
-        </div>        
+            <button type="button" id="birdSelectionBtn">Selected Bird: Duck<br><br><img id="selectedBird" src="img/DuckIdle.png"></button>
+        </div>
     </div>
     <div id="gameInstructionsScreen" class="menu">
         <div class="menuContainer">
@@ -24,11 +25,12 @@
                     <li>Tap to drop the bird</li>
                     <li>Tap again to swing the bat</li>
                     <li>Hit the bird as far as possible</li>
-                </ul>                
-                <br>        
+                    <li>Try pressing while the bird is flying</li>
+                </ul>
+                <br>
             </div>
             <button type="button" id="closeInstructionsBtn">Back</button>
-        </div>        
+        </div>
     </div>
     <div id="leaderboardsScreen" class="menu">
         <div class="menuContainer">
@@ -64,7 +66,7 @@
                 <br>
             </div>
             <button type="button" id="closeLeaderboardsBtn">Back</button>
-        </div>        
+        </div>
     </div>
     <div id="birdSelectScreen" class="menu">
         <div class="menuContainer">
@@ -72,10 +74,10 @@
             <button type="button" class="selectBird" title="Duck">Duck<br><br><img src="img/DuckIdle.png"></button><br>
             <button type="button" class="selectBird" title="Eagle">Eagle<br><br><img src="img/EagleIdle.png"></button><br>
             <button type="button" class="selectBird" title="Penguin">Penguin<br><br><img src="img/PenguinIdle.png"></button>
-        </div>        
+        </div>
     </div>
     <div id="gameOverScreen" class="menu">
-        <div class="menuContainer">            
+        <div class="menuContainer">
             <div id="gameOverMsg" class="menuText">Game over!</div><br>
             <form id="submitScoreForm">
                 <input type="text" id="submitScoreName" maxlength="15" placeholder="Name (required)" required><br>
@@ -86,12 +88,14 @@
             <button type="button" id="playAgainBtn">Play Again</button><br>
             <button type="button" id="menuScreenBtn">Menu</button>
         </div>
-    </div>    
-    
+    </div>
+
     <!-- Load scripts at the end of a page -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>        
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="js/constants.js"></script>
-    <script src="js/quackWhacker.js"></script>
-    <script src="js/menu.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/draw.js"></script>
+    <script src="js/controls.js"></script>
+    <script src="js/run_game.js"></script>
 </body>
 </html>

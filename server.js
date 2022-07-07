@@ -14,17 +14,16 @@ var mongoClient = require('mongodb').MongoClient;
 var dbConnection;
 var highScoreCol;
 
-const clientPath = path.join('client');
-const clientImgPath = path.join('client', 'img');
+const clientPath = path.join(__dirname, 'client');
 
 var PORT = process.env.PORT || 5000;
 //const highScoreUrl = `${process.env.DB_PROTOCOL}://${process.env.DB_HOST}/`; // For testing
 const highScoreUrl = `${process.env.DB_PROTOCOL}://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}/`; // For production
 const maxDocumentsPerBird = process.env.MAX_DOCUMENTS_PER_BIRD;
+const birdTypes = ["Duck", "Eagle", "Penguin"];;
 
 const app = express();
 app.use(express.static(clientPath));
-app.use('/client/img', express.static(clientImgPath));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
@@ -34,7 +33,7 @@ server.on('error', (err) => {
     console.error('Server error: ', err);
 });
 
-server.listen(PORT, () => {    
+server.listen(PORT, () => {
     connectToDatabase();
     console.log('Server started on port: ', PORT);
 });
@@ -57,11 +56,11 @@ app.get("/getHighScores", (req, res) => {
         } else {
             console.log("HighScore collection retrieved successfully");
             res.send(items);
-        }        
+        }
     });
 });
 
-app.get("/checkHighScore", (req, res) => {    
+app.get("/checkHighScore", (req, res) => {
     console.log("CheckHighScore GET request received - bird: " + req.query.bird + ", score: " + req.query.score);
 
     if(typeof highScoreCol === 'undefined') {
@@ -94,7 +93,7 @@ app.get("/checkHighScore", (req, res) => {
                 res.send("allTime");
             } else if (result.filter( i => { return (new Date() - Date.parse(i["date"])) < (1000 * 60 * 60 * 24 * 30)}).length < maxDocumentsPerBird) {
                 console.log("Maximum number of monthly high scores not reached");
-                res.send("monthly");    
+                res.send("monthly");
             } else if(typeof result.find( i => { return i["score"] < req.query.score; }) !== 'undefined') {
                 console.log("Lower monthly high score found");
                 res.send("monthly");
@@ -112,9 +111,21 @@ app.post("/postHighScore", (req, res) => {
         res.send("unavailable");
         return;
     }
-    
+
     if (filter.isProfane(req.body.name)) {
         res.send("badWord");
+        return;
+    }
+
+    // TODO: Probably a better way to verify possible bird types
+    if(!birdTypes.includes(req.body.bird)) {
+        res.send("unavailable");
+        return;
+    }
+
+    // TODO: Probably a better way to verify possible max scores
+    if(req.body.score > 1716) {
+        res.send("unavailable");
         return;
     }
 
@@ -135,8 +146,8 @@ app.post("/postHighScore", (req, res) => {
         dateQuery["$gte"] = new Date(new Date().getTime() - (1000 * 60 * 60 * 24 * 30)).toISOString();
 
         highScoreCol.countDocuments({ bird: birdQuery, date: dateQuery }, (err, count) => {
-            if(err) throw err;            
-    
+            if(err) throw err;
+
             if(count > maxDocumentsPerBird) {
                 // Find and delete record with the lowest score (oldest first)
                 highScoreCol.find({bird: birdQuery}).sort({score: 1, date: -1}).limit(1).toArray((err, result) => {
@@ -146,29 +157,28 @@ app.post("/postHighScore", (req, res) => {
                         if(err) throw err;
 
                         console.log("Lowest score document removed");
-                    });                    
+                    });
                 });
             }
-        });            
-    });    
+        });
+    });
 });
 
-connectToDatabase = () => {
+function connectToDatabase() {
     if(typeof dbConnection !== 'undefined') {
-        // TODO - actually test connection
         console.log("Already connected to db");
     }
     else {
         let connectOptions = { useUnifiedTopology: true };
         console.log("Attempting to connect to db");
-        mongoClient.connect(highScoreUrl, connectOptions, function(err, db) {            
+        mongoClient.connect(highScoreUrl, connectOptions, function(err, db) {
             if(err) {
                 console.log(err);
             } else {
                 console.log("Connected to db");
                 dbConnection = db;
                 highScoreCol = dbConnection.db("highScores").collection("allScores");
-            }    
+            }
         });
     }
 }
@@ -195,7 +205,7 @@ const dbReconnectJob = schedule.scheduleJob('0 * * * *', () => {
 
 // Deletes any records that are not in the top maxDocumentsPerBird and not within the last 30 days
 // Runs daily at midnight
-const leaderboardPurgeJob = schedule.scheduleJob('0 0 * * *', () => {    
+const leaderboardPurgeJob = schedule.scheduleJob('0 0 * * *', () => {
     console.log("Leaderboard purge job started");
 
     if(typeof highScoreCol === 'undefined') {
@@ -204,8 +214,8 @@ const leaderboardPurgeJob = schedule.scheduleJob('0 0 * * *', () => {
 
     let ag = {};
     ag["_id"] = "$bird";
-    
-    let expirationDate = new Date(new Date().getTime() - (1000 * 60 * 60 * 24 * 30)).toISOString();    
+
+    let expirationDate = new Date(new Date().getTime() - (1000 * 60 * 60 * 24 * 30)).toISOString();
 
     highScoreCol.aggregate([{$match: {}}, {$group: ag}]).toArray((err, res) => {
         if (err) throw err;
@@ -217,13 +227,13 @@ const leaderboardPurgeJob = schedule.scheduleJob('0 0 * * *', () => {
             highScoreCol.find({ bird: birdQuery }).sort({score: -1, date: -1}).toArray((err, items) => {
                 if (err) throw err;
 
-                items.forEach( (item, i) => {
+                items.forEach((item, i) => {
                     if(i + 1 > maxDocumentsPerBird && item["date"] < expirationDate) {
                         highScoreCol.deleteOne({_id: item["_id"]}, (err, res) => {
                             if (err) throw err;
 
                             console.log("Document removed - ID: " + item["_id"]);
-                        });                        
+                        });
                     }
                 });
             });
