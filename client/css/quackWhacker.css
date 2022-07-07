@@ -114,7 +114,7 @@ th, td {
 }
 
 #highScoreTableContainer {
-    height: 500px;
+    height: 350px;
     overflow-y: auto;
 }
 

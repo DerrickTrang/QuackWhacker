@@ -33,7 +33,7 @@ var newKeyInput;
 var sessionHighScore = 0;
 
 const getScoreFromPos = (x) => {
-    return Math.round(x) / 10;
+    return Math.round(x / 10);
 }
 
 const updateCurrentPosition = () => {
@@ -41,7 +41,7 @@ const updateCurrentPosition = () => {
     let dateDiff = currentTime - new Date(lastUpdateTime);
 
     if(dateDiff > 1000) {
-        /* If animation loop is stopped for longer than 1 second (e.g. switching browser tabs), redraw same frame */
+        /* If animation loop is stopped for longer than 1 second (e.g. switching browser tabs), redraw the same frame - basically pauses the game */
         dateDiff = 0;
     }
 
